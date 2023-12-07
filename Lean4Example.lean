@@ -46,7 +46,7 @@ import Mathlib.Data.Real.ENNReal
 import Mathlib.Data.Real.Irrational
 import Mathlib.Data.Real.NNReal
 import Mathlib.Data.Real.Sqrt
---import Mathlib.Data.Real.GoldenRatio
+import Mathlib.Data.Real.GoldenRatio
 import Mathlib.Data.Set.Finite
 import Mathlib.Data.Sym.Sym2
 import Mathlib.Data.ZMod.Basic
@@ -62,14 +62,14 @@ import Mathlib.Order.WellFounded
 import Mathlib.Topology.Basic
 import Mathlib.Topology.Instances.NNReal
 
-import Aesop
+-- import Aesop
 
 
 
-open Nat (add_assoc add_comm)
+-- open Nat (add_assoc add_comm)
 
 theorem hello_world (a b c : Nat)
   : a + b + c = a + c + b := by
   rw [add_assoc, add_comm b, ←add_assoc]
 
-theorem foo (a : Nat) : a + 1 = Nat.succ a := by rfl
+-- theorem foo (a : Nat) : a + 1 = Nat.succ a := by rfl
