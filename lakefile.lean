@@ -8,8 +8,8 @@ package «lean4-example» {
 -- require mathlib from
 --   git "https://github.com/leanprover-community/mathlib4" @ "b6ec7450650a5945bf4244751be4a5cf1fee962f"
 
--- require mathlib from
---   git "https://github.com/leanprover-community/mathlib4"
+require mathlib from
+  git "https://github.com/leanprover-community/mathlib4"
 
 @[default_target]
 lean_lib «Lean4Example» {
