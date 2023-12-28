@@ -13,7 +13,7 @@ import Mathlib.Data.Finset.LocallyFinite
 import Mathlib.Algebra.GroupWithZero.Units.Lemmas
 import Mathlib.Data.Real.Basic
 import Mathlib.Data.Nat.Parity
-#align_import data.nat.choose.sum from "leanprover-community/mathlib"@"4c19a16e4b705bf135cf9a80ac18fcc99c438514"
+-- #align_import data.nat.choose.sum from "leanprover-community/mathlib"@"4c19a16e4b705bf135cf9a80ac18fcc99c438514"
 
 
 open Nat
