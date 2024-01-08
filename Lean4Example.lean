@@ -1,69 +1,49 @@
-
--- import Theorem.Premises.real_theorem.mini_theorem
-
-import Mathlib.Data.Nat.Choose.Basic
-import Mathlib.Data.Nat.ModEq
-import Mathlib.Tactic.Linarith
-import Mathlib.Algebra.BigOperators.Ring
-import Mathlib.Algebra.BigOperators.Intervals
-import Mathlib.Algebra.BigOperators.Order
-import Mathlib.Algebra.BigOperators.NatAntidiagonal
 import Mathlib.Data.Nat.Choose.Sum
-import Mathlib.Data.Finset.LocallyFinite
-import Mathlib.Algebra.GroupWithZero.Units.Lemmas
--- import Mathlib.Data.Real.Basic
-import Mathlib.Data.Nat.Parity
-#align_import data.nat.choose.sum from "leanprover-community/mathlib"@"4c19a16e4b705bf135cf9a80ac18fcc99c438514"
 
+#align_import data.nat.choose.sum from "leanprover-community/mathlib"@"4c19a16e4b705bf135cf9a80ac18fcc99c438514"
 
 open Nat
 
-open Finset
-
-open BigOperators
-
-variable {R : Type*}
-
--- namespace Commute
-
-variable [Semiring R] {x y : R}
-
-variable {α : Type u} {β : Type v} {γ : Type w} {s₂ s₁ s : Finset α} {a : α} {g f : α → β}
-
-variable [CommMonoid β]
-
--- namespace exp_test
-
---定理1.2
-theorem test12(h1:1 ≤ n)(h2:1 ≤ k) : choose n k = choose (n-1) k  + choose (n-1) (k-1) := by
-  have hneg :  choose n k = choose (n - 1 + 1) (k - 1 + 1)  := by
-   rw[Nat.sub_add_cancel h1, Nat.sub_add_cancel h2]
-  rw[hneg]
+--原始定理
+theorem idt1_Pascal's_Recurrence(h1:1 ≤ n)(h2:1 ≤ k) : choose n k = choose (n-1) k  + choose (n-1) (k-1) := by
+  have choose_eq_choose_sub_add :  choose n k = choose (n - 1 + 1) (k - 1 + 1)  := by
+    rw[Nat.sub_add_cancel h1, Nat.sub_add_cancel h2]
+  rw[choose_eq_choose_sub_add]
   rw[add_comm (choose (n - 1) k) (choose (n - 1) (k - 1))]
-  have hk : choose (n - 1) k = choose (n - 1) (k - 1 + 1) := by
-   rw[Nat.sub_add_cancel h2]
-  rw[hk, choose_succ_succ]
+  have choose_sub_eq_choose_sub_add : choose (n - 1) k = choose (n - 1) (k - 1 + 1) := by rw[Nat.sub_add_cancel h2]
+  rw[choose_sub_eq_choose_sub_add, choose_succ_succ]
 
-theorem sum_choose_eq_Ico (hn: n ≤ 2 * n): ∑ k in range n, choose (2 * n) k = ∑ k in Ico (n + 1) (2 * n + 1), (choose (2 * n) k) := by
-  rw [range_eq_Ico]
-  have h1 : ∑ k in Ico 0 n, Nat.choose (2 * n) k = ∑ k in Ico 0 n, Nat.choose (2 * n) (2 * n - k) := by
-    refine' sum_congr rfl fun y hy ↦ _
-    have yn : y < n := by exact (mem_Ico.1 hy).2
-    have y2n : y ≤ 2 * n := by linarith
-    rw[← choose_symm y2n]
-  rw[h1]
-  rw[sum_Ico_reflect]
-  simp
-  have two_mul_succ_sub : 2 * n + 1 - n = n + 1 := by
-    have two_mul_add_sub : 2 * n + 1 - n = 2 * n - n + 1  := by
-      rw[add_comm]
-      rw[Nat.add_sub_assoc hn]
-      rw[add_comm]
-    rw[two_mul_add_sub]
-    simp
-    have h23: 2 * n - n = 2 * n - 1 * n := by simp
-    rw[h23]
-    rw[← Nat.mul_sub_right_distrib]
-    simp
-  rw[two_mul_succ_sub]
-  linarith
+
+
+/-基于预测的后向数据增强:
+摘取其中任意第n步到第n+m步策略
+采用强化学习或LLM进行下一步/若干步策略预测得到新的目标G_{p}，其作为新的待证明定理T_{p}
+反向应用所有策略
+第n-1步的目标G_{n-1}写成新的假设h_{g}
+重写h_{g}作为新定理证明的最后一步。-/
+
+--例如，从第一步开始，在rw[add_comm (choose (n - 1) k) (choose (n - 1) (k - 1))]后断开，并往后预测一步得到新的目标，将其作为新的待证明定理
+--候选策略： rw [mul_comm] ; rw [add_comm] ; rw [mul_assoc] ; rw [add_assoc] ; rw [pow_add]...
+--依次使用候选策略，成功应用的话就会生成新的目标，报错就丢弃
+
+
+
+--例如此处rw [mul_comm]应用失败，rw [add_comm]应用成功
+-- theorem DA_idt1_Pascal's_Recurrence(h1:1 ≤ n)(h2:1 ≤ k) : choose n k = choose (n-1) k  + choose (n-1) (k-1) := by
+--   have choose_eq_choose_sub_add :  choose n k = choose (n - 1 + 1) (k - 1 + 1)  := by
+--     rw[Nat.sub_add_cancel h1, Nat.sub_add_cancel h2]
+--   rw [choose_eq_choose_sub_add]
+--   rw [add_comm (choose (n - 1) k) (choose (n - 1) (k - 1))]
+--   rw [add_comm] --此处新的目标为choose (1 + (n - 1)) (k - 1 + 1) = choose (n - 1) (k - 1) + choose (n - 1) k
+
+
+
+--rw [add_comm]对应生成的新定理
+-- theorem BDA2 (h1:1 ≤ n)(h2:1 ≤ k) (h0:choose n k = choose (n-1) k  + choose (n-1) (k-1)):
+--  choose (1 + (n - 1)) (k - 1 + 1) = choose (n - 1) (k - 1) + choose (n - 1) k := by
+--    have choose_eq_choose_sub_add :  choose n k = choose (n - 1 + 1) (k - 1 + 1)  := by
+--     rw[Nat.sub_add_cancel h1, Nat.sub_add_cancel h2]
+--    rw [← add_comm]
+--    rw [← add_comm (choose (n - 1) k) (choose (n - 1) (k - 1))]
+--    rw [← choose_eq_choose_sub_add]
+--    rw [h0]
